@@ -762,4 +762,16 @@ footer .social a {
   .websites-box img {
     width: 12rem;
   }
+
+}
+.form-message.success {
+  color: green;
+}
+
+.form-message.error {
+  color: red;
+}
+.form-message {
+  display:none; 
+  margin-top:10px;
 }
