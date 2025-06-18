@@ -50,30 +50,45 @@ window.addEventListener("scroll", highlightActiveSection);
 // Initial call to highlight the active section when the page loads
 document.addEventListener("DOMContentLoaded", highlightActiveSection);
 
-emailjs.init("0p9tpQdy8w4wavvwQ");
-document.getElementById("ContactForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const title = document.getElementById("title").value;
-  const message = document.getElementById("msg").value;
-  const phone = document.getElementById("phone").value;
 
-  // Send the email
-  emailjs
-    .send("service_0ujky8t", "template_bpdxiwr", {
-      name,
-      email,
-      msg: message,
-      title,
-      phone,
-    })
-    .then((response) => {
-      console.log("Success!", response);
-      alert("Your message has been sent successfully!");
-    })
-    .catch((error) => {
-      console.log("Failed...", error);
-      alert("Sorry, something went wrong.");
-    });
-});
+    // Form Submission
+    document.getElementById('ContactForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const formMessage = document.getElementById('formMessage');
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.textContent;
+
+      // Disable button and show sending status
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending...';
+      formMessage.style.display = 'none';
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          formMessage.textContent = '✅ Message sent successfully! I will get back to you soon.';
+          formMessage.className = 'form-message success';
+          form.reset();
+        } else {
+          throw new Error('Message failed to send');
+    }
+  }
+      finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+        formMessage.style.display = 'block';
+
+        setTimeout(() => {
+          formMessage.style.display = 'none';
+        }, 5000);
+      }
+   });
